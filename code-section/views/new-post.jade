@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  h1=title
+  form(method='POST')
+    input(name='title')
+    input(name='description')
+    select(name='users')
+      each val in users
+        option(value=val._id)= val.username
+    input(name='comment')
+    select(name='comment_by')
+      each val in users
+        option(value=val._id)= val.username
+    button Submit

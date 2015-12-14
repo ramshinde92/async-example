@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  h1=title
+  form(method='POST')
+    input(name='name')
+    input(name='username')
+    select
+      each val in posts
+        option(value=val._id)= val.title
+    button Submit
