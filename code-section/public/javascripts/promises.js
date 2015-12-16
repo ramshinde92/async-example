@@ -1,58 +1,71 @@
 $(function(){
+  var getUser = function(uid){
+    return new Promise(function (resolve, reject) {
+        $.get('http://localhost:3000/posts/get-user/'+uid).then(resolve,reject);
+      }
+    );
+  }
+
+  $('ul').on('click','.users',function(e){
+    e.preventDefault();
+    var uid = $(this).data('uid');
+      getUser(uid)
+      .then(function(user){
+        var promises = [];
+
+        $('.user-data').html(`
+          <p> Name: ${user.name} </p>
+          <p> Username: ${user.username} </p>
+        `);
+
+        user.posts.forEach(function(val, key){
+          var p = $.get('http://localhost:3000/posts/get-post/'+ val);
+          promises.push(p);
+        });
+        return Promise.all(promises);
+      })
+      .then(function(posts){
+        var postsHTML = `<p> Posts of User </p><ul>`;
+        var commentPromise = {};
+        posts.forEach(function(val, key){
+          var promises = [];
+          postsHTML += `<li class="${val._id}">
+            <p>Tag: ${val.title},  Description: ${val.description}</p>
+            <p>Comments: </p><ul class= "comment-section"></ul>
+          </li>`;
+          val.comments.forEach(function(val, key){
+            var p = $.get('http://localhost:3000/posts/get-comment/'+ val);
+            promises.push(p);
+          });
+          commentPromise[val._id] = Promise.all(promises);
+        });
+        postsHTML += '</ul>';
+        $('.user-post').html(postsHTML);
+        return Promise.props(commentPromise);
+      })
+      .then(function(comments){
+        Object.keys(comments).forEach(function(val, key){
+          var commentsHTML = ``;
+          comments[val].forEach(function(value, key){
+            commentsHTML += `<li>${value.description}</li>`;
+          });
+          $('.'+val).find('.comment-section').append(commentsHTML);
+        });
+
+      });
+  });
+
   $.get('http://localhost:3000/posts/get-users')
     .then(function(users){
-      var ids = [];
       for(var index in users){
-        $('.get-users').append('<li>'+JSON.stringify(users[index])+'</li>');
-        ids.push(getID(users[index].posts));
+        var a = users[index];
+        $('.get-users').append(`<li>
+          <a data-uid="${a._id}" class="users">${a.name}</a>
+        </li>`);
       }
-
-      return getMultiple(ids, getPost);
-    })
-    .then(function(posts){
-      var ids = [];
-      for(var index in posts){
-        $('.get-posts').append('<li>'+JSON.stringify(posts[index])+'</li>');
-        ids.push(getID(posts[index].comments));
-      }
-
-      return getMultiple(ids, getComment);
-    })
-    .then(function(comments){
-      for(var index in comments){
-        $('.get-comments').append('<li>'+JSON.stringify(comments[index])+'</li>');
-      }
-    }, handleError);
+    });
 });
 
 function handleError(xhr, status, error){
   console.log(error);
-}
-
-function getPost(id){
-  return $.get('http://localhost:3000/posts/get-post/'+id).then(function(data, status, xhr){
-    return data;
-  });
-}
-
-function getComment(id){
-  return $.get('http://localhost:3000/posts/get-comment/'+id).then(function(data, status, xhr){
-    return data;
-  });
-}
-
-function getMultiple(ids, getReq){
-  var promises = ids.map(getReq);
-
-  return $.when.apply($, promises).then(function(){
-    return $.makeArray(arguments);
-  });
-}
-
-function getID(obj){
-  var id = "";
-  for(index in obj){
-    id = obj[index];
-  }
-  return id;
 }

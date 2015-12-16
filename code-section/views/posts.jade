@@ -3,13 +3,14 @@ extends layout
 block content
   ul(class='get-users')
   hr
-  ul(class='get-posts')
+  div(class='user-data')
   hr
-  ul(class='get-comments')
+  div(class='user-post')
   hr
   script(type='text/javascript', src='/javascripts/jquery-2.1.4.min.js')
   script(type='text/javascript', src='/javascripts/async.min.js')
   script(data-require='traceur@*', data-semver='0.0.0-20140302', src='https://traceur-compiler.googlecode.com/git/bin/traceur.js')
   script(data-require='traceur@*', data-semver='0.0.0-20140302', src='https://traceur-compiler.googlecode.com/git/src/bootstrap.js')
   script(src='//cdnjs.cloudflare.com/ajax/libs/bluebird/1.2.2/bluebird.min.js')
-  script(type='module', src='/javascripts/promises.js')
+  script(type='text/javascript', src='/javascripts/promises.js')
+  script(type='text/javascript', src='/javascripts/geo-example.js')

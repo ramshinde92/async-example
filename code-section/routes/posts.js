@@ -8,6 +8,17 @@ router.get('/posts', function(req, res, next){
   res.render('posts.jade', {title: 'List of all posts'});
 });
 
+router.get('/get-user/:id', function(req, res, next){
+  User.findById(req.params.id, function(err, user){
+    if(err){
+      console.log(err);
+    }else{
+      console.log(user);
+      res.json(user);
+    }
+  });
+});
+
 router.get('/get-post/:id', function(req, res, next){
   Post.findById(req.params.id, function(err, post){
     if(err){
