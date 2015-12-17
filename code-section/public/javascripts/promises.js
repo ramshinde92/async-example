@@ -1,4 +1,14 @@
 $(function(){
+  $.get('http://localhost:3000/posts/get-users')
+    .then(function(users){
+      for(var index in users){
+        var a = users[index];
+        $('.get-users').append(`<li>
+          <a data-uid="${a._id}" class="user">${a.name}</a>
+        </li>`);
+      }
+    });
+
   var getUser = function(uid){
     return new Promise(function (resolve, reject) {
         $.get('http://localhost:3000/posts/get-user/'+uid).then(resolve,reject);
@@ -6,7 +16,7 @@ $(function(){
     );
   }
 
-  $('ul').on('click','.users',function(e){
+  $('ul').on('click','.user',function(e){
     e.preventDefault();
     var uid = $(this).data('uid');
       getUser(uid)
@@ -27,12 +37,14 @@ $(function(){
       .then(function(posts){
         var postsHTML = `<p> Posts of User </p><ul>`;
         var commentPromise = {};
+
         posts.forEach(function(val, key){
           var promises = [];
           postsHTML += `<li class="${val._id}">
             <p>Tag: ${val.title},  Description: ${val.description}</p>
             <p>Comments: </p><ul class= "comment-section"></ul>
           </li>`;
+
           val.comments.forEach(function(val, key){
             var p = $.get('http://localhost:3000/posts/get-comment/'+ val);
             promises.push(p);
@@ -40,6 +52,7 @@ $(function(){
           commentPromise[val._id] = Promise.all(promises);
         });
         postsHTML += '</ul>';
+
         $('.user-post').html(postsHTML);
         return Promise.props(commentPromise);
       })
@@ -54,16 +67,6 @@ $(function(){
 
       });
   });
-
-  $.get('http://localhost:3000/posts/get-users')
-    .then(function(users){
-      for(var index in users){
-        var a = users[index];
-        $('.get-users').append(`<li>
-          <a data-uid="${a._id}" class="users">${a.name}</a>
-        </li>`);
-      }
-    });
 });
 
 function handleError(xhr, status, error){
