@@ -15,7 +15,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
 
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+		<link rel="stylesheet" href="css/theme/white.css" id="theme">
 
 		<!-- Code syntax highlighting -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -67,13 +67,13 @@
 					<section>
 						<h4>Synchronous execution </h4>
 						<p>means the execution happens in a single series.  A->B->C->D. If you are calling those routines, A will run, then finish, then B will start, then finish, then C will start, etc.</p>
-						<p>Example : You are in a queue to get a movie ticket. You cannot get one until everybody in front of you gets one, and the same applies to the people queued behind you.</p>
+						<!-- <p>Example : You are in a queue to get a movie ticket. You cannot get one until everybody in front of you gets one, and the same applies to the people queued behind you.</p> -->
 						<p> <a target="_blank" href="http://stackoverflow.com/questions/748175/asynchronous-vs-synchronous-execution-what-does-it-really-mean">Learn more</a> </p>
 					</section>
 					<section>
 						<h4>Asynchronous execution</h4>
-						<p> mean you begin a routine, and let it run in the background while you start your next, then at some point, say "wait for this to finish"</p>
-						<p>Example : You are in a restaurant with many other people. You order your food. Other people can also order their food, they don't have to wait for your food to be cooked and served to you before they can order.</p>
+						<p>mean you begin a routine, and let it run in the background while you start your next, then at some point, say "wait for this to finish"</p>
+						<!-- <p>Example : You are in a restaurant with many other people. You order your food. Other people can also order their food, they don't have to wait for your food to be cooked and served to you before they can order.</p> -->
 						<p> <a target="_blank" href="http://stackoverflow.com/questions/748175/asynchronous-vs-synchronous-execution-what-does-it-really-mean">Learn more</a> </p>
 					</section>
 				</section>
@@ -84,7 +84,7 @@
 						<code>
 	var fs = require('fs');
 	console.log("before read");
-	var file = fs.readFileSync('a.txt', 'utf8');
+	console.log(fs.readFileSync('a.txt', 'utf8'));
 	console.log("after read");
 						</code>
 						</pre>
@@ -122,6 +122,16 @@
 				</section>
 				<section>
 					<section>
+						<p>Why Javascript Asynchronous ?</p>
+						<img src="/img/why.jpeg" alt="">
+						<p>Javascript is always synchronous and single-threaded but Javascript is also Event-Based Programming</p>
+					</section>
+					<section>
+						<iframe width="560" height="315" src="https://www.youtube.com/embed/8aGhZQkoFbQ" frameborder="0" allowfullscreen></iframe>
+					</section>
+				</section>
+				<section>
+					<section>
 						<p>When it fits best ?</p>
 						<p>When JS is executed, synchronous code has the potential to block further execution until it has finished.</p>
 						<pre>
@@ -149,20 +159,10 @@
 				</section>
 				<section>
 					<section>
-						<p>Why Javascript Asynchronous ?</p>
-						<img src="/img/why.jpeg" alt="">
-						<p>Javascript is always synchronous and single-threaded but Javascript is also Event-Based Programming</p>
-					</section>
-					<section>
-						<iframe width="560" height="315" src="https://www.youtube.com/embed/8aGhZQkoFbQ" frameborder="0" allowfullscreen></iframe>
-					</section>
-				</section>
-				<section>
-					<section>
 						<p>Different Ways:</p>
 						<ul>
 							<li>old - callback</li>
-							<li>refactored - clean-callback</li>
+							<li>refactored - clean-callback or async.js</li>
 							<li>better - promises and other libraries</li>
 							<li>best - generators in ES6</li>
 						</ul>
@@ -203,45 +203,88 @@
 				</section>
 				<section>
 					<section>
+						<p>Popular Libraries for Async:</p>
+						<ul>
+							<li> <a target="_blank" href="https://github.com/caolan/async">async (callback based)</a></li>
+							<li> <a target="_blank" href="https://github.com/kriskowal/q">q</a> </li>
+							<li> <a target="_blank" href="https://github.com/cujojs/when">when</a> </li>
+							<li> <a target="_blank" href="https://github.com/petkaantonov/bluebird">bluebird</a> </li>
+							<li>es6 native Promise</li>
+						</ul>
+					</section>
+					<section>
+						<p>Why to use them ?</p>
+						<ul>
+							<li>Provide function to run task in Series and parallel</li>
+							<li>reject and resolve</li>
+							<li>additional functions to deliberate</li>
+							<li>follows ES6</li>
+						</ul>
+					</section>
+				</section>
+				<section>
+					<section>
+						Two way to Declare Promise
+						<pre><code>
+	function myPromise1(){
+		return new Promise(reject,resolve){
+			setTimeout(function(){
+				resolve();
+			},2000);
+		}
+	}
+						</code></pre>
+						<pre><code>
+	function myPromise2(){
+		var deferred = Promise.defer();
+		setTimeout(function(){
+			deferred.resolve();
+		},2000);
+		return deferred.promise;
+  	}
+						</code></pre>
+					</section>
+					<section>
+						Run Task in series
+<pre><code>
+	(myPromise1)
+	.then(function(result){
+		// custom code
+		return myPromise2()
+	}).then(function(result2){
+		// custom code
+		return result2;
+	}).catch(function(err){
+		console.log(err);
+	});
+</code></pre>
+	Run Task in parallel
+	<pre><code>
+	Promise.all([promise1, promise2], function(results){
+		return results;
+	}).catch(function(err){
+		console.log(err);
+	});
+	</code></pre>
+					</section>
+				</section>
+				<section>
+					<section>
 						<p>Generators in JS</p>
-						<p>A generator is a special type of function that works as a factory for iterators.</p>
+						<p>Generators are functions which can be exited and later re-entered. Their context (variable bindings) will be saved across re-entrances.</p>
 						<p>A function becomes a generator if it contains one or more yield expressions and if it uses the function* syntax.</p>
 					</section>
 					<section>
 						<p>Syntax</p>
 						<pre>
 							<code>
-	function *foo() {
-	  yield 1;
-	  yield 2;
-	  yield 3;
-	  yield 4;
-	  yield 5;
-	}
+Promise.coroutine(function* (val) {
+	var result1 = yield Promise1;
+  var result2 = yield Promise2;
+  return [result1,result2];
+});
 							</code>
 						</pre>
-					</section>
-				</section>
-				<section>
-					<section>
-						<p>Popular Libraries for Async:</p>
-						<ul>
-							<li>q</li>
-							<li>async</li>
-							<li>bluebird</li>
-						</ul>
-					</section>
-					<section>
-						<p>Why to use them ?</p>
-						<ul>
-							<li>reject and resolve</li>
-							<li>additional functions to deliberate</li>
-							<li>follows ES6</li>
-						</ul>
-					</section>
-					<section>
-						<p>One of the Example of async</p>
-						<p><img src="img/cargo.jpg" alt=""></p>
 					</section>
 				</section>
 				<section>
