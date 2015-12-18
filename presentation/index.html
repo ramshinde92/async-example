@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>reveal.js – The HTML Presentation Framework</title>
+		<title>Async in Javascript</title>
 
 		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
 		<meta name="author" content="Hakim El Hattab">
@@ -42,12 +42,11 @@
 			<div class="slides">
 				<section>
 					<h3>Asynchronous programming in javascript </h3>
-					<!-- <h3>Hi All</h3> -->
 					<p>
 						Presented by
 
 						<ul>
-						 	<li>Ram Shinda / <a href="https://github.com/ramshinde92">@ramshinde92</a></li>
+						 	<li>Ram Shinde / <a href="https://github.com/ramshinde92">@ramshinde92</a></li>
 						 	<li>Sumit Jain / <a href="https://github.com/sumit10">@sumit10</a></li>
 						</ul>
 
@@ -55,77 +54,118 @@
 					</p>
 				</section>
 				<section>
-					<p>Questions we are going to answer today of Asynchronous programming in javascript</p>
-					<!-- <h3>Hi All</h3> -->
+					<p>Discussion will be covered based on :</p>
 					<p>
 						<ul>
-							<li>What ?</li>
-							<li>Why ?</li>
-							<li>How ?</li>
+							<li>What is Async ?</li>
+							<li>Why/When should we use it ?</li>
+							<li>How to ?</li>
 						</ul>
 					</p>
 				</section>
 				<section>
-					<h4>Synchronous execution </h4>
-					<p>means the execution happens in a single series.  A->B->C->D. If you are calling those routines, A will run, then finish, then B will start, then finish, then C will start, etc.</p>
-					<p>Example : You are in a queue to get a movie ticket. You cannot get one until everybody in front of you gets one, and the same applies to the people queued behind you.</p>
-					<p> <a target="_blank" href="http://stackoverflow.com/questions/748175/asynchronous-vs-synchronous-execution-what-does-it-really-mean">Learn more</a> </p>
+					<section>
+						<h4>Synchronous execution </h4>
+						<p>means the execution happens in a single series.  A->B->C->D. If you are calling those routines, A will run, then finish, then B will start, then finish, then C will start, etc.</p>
+						<p>Example : You are in a queue to get a movie ticket. You cannot get one until everybody in front of you gets one, and the same applies to the people queued behind you.</p>
+						<p> <a target="_blank" href="http://stackoverflow.com/questions/748175/asynchronous-vs-synchronous-execution-what-does-it-really-mean">Learn more</a> </p>
+					</section>
+					<section>
+						<h4>Asynchronous execution</h4>
+						<p> mean you begin a routine, and let it run in the background while you start your next, then at some point, say "wait for this to finish"</p>
+						<p>Example : You are in a restaurant with many other people. You order your food. Other people can also order their food, they don't have to wait for your food to be cooked and served to you before they can order.</p>
+						<p> <a target="_blank" href="http://stackoverflow.com/questions/748175/asynchronous-vs-synchronous-execution-what-does-it-really-mean">Learn more</a> </p>
+					</section>
 				</section>
 				<section>
-					<h4>Asynchronous execution</h4>
-					<p> mean you begin a routine, and let it run in the background while you start your next, then at some point, say "wait for this to finish"</p>
-					<p>Example : You are in a restaurant with many other people. You order your food. Other people can also order their food, they don't have to wait for your food to be cooked and served to you before they can order.</p>
-					<p> <a target="_blank" href="http://stackoverflow.com/questions/748175/asynchronous-vs-synchronous-execution-what-does-it-really-mean">Learn more</a> </p>
-				</section>
-				<section>
-					<p>Synchronous Code demo</p>
-					<pre>
-					<code>
+					<section>
+						<p>Synchronous Code demo</p>
+						<pre>
+						<code>
 	var fs = require('fs');
 	console.log("before read");
 	var file = fs.readFileSync('a.txt', 'utf8');
 	console.log("after read");
-					</code>
-					</pre>
+						</code>
+						</pre>
+							<p>Output</p>
+							<pre>
+							<code>
+	before read
+	hi from file
+	after read
+							</code>
+							</pre>
+					</section>
+					<section>
+						<p>Asynchronous Code demo</p>
+						<pre>
+						<code>
+	var fs = require('fs');
+	console.log("before read");
+	fs.readFile('a.txt', 'utf8', function (err, data) {
+			if (err) throw err;
+			console.log(data);
+	});
+	console.log("after read");
+						</code>
+						</pre>
 						<p>Output</p>
 						<pre>
 						<code>
-before read
-hi from file
-after read
+	before read
+	after read
+	hi from file
 						</code>
 						</pre>
+					</section>
 				</section>
 				<section>
-					<p>Asynchronous Code demo</p>
-					<pre>
-					<code>
-var fs = require('fs');
-console.log("before read");
-fs.readFile('a.txt', 'utf8', function (err, data) {
-		if (err) throw err;
-		console.log(data);
-});
-console.log("after read");
-					</code>
-					</pre>
-					<p>Output</p>
-					<pre>
-					<code>
-before read
-after read
-hi from file
-					</code>
-					</pre>
+					<section>
+						<p>When it fits best ?</p>
+						<p>When JS is executed, synchronous code has the potential to block further execution until it has finished.</p>
+						<pre>
+							<code>
+	chirps = loadChirpsSync();
+	// ... Wait
+	// ... Do something with chirps
+	doSomeOtherImportantThings();
+							</code>
+						</pre>
+					</section>
+					<section>
+						<p>With Async</p>
+						<p>This doesn't has to wait for chirps to load.</p>
+						<pre>
+							<code>
+	loadChirpsAsync(function(){
+		// ... Wait
+		// ... Do something with chirps
+	});
+	doSomeOtherImportantThings();
+							</code>
+						</pre>
+					</section>
 				</section>
 				<section>
 					<section>
 						<p>Why Javascript Asynchronous ?</p>
 						<img src="/img/why.jpeg" alt="">
-						<p>Javascript is always synchronous and single-threaded but Javascript Event-Based Programming</p>
+						<p>Javascript is always synchronous and single-threaded but Javascript is also Event-Based Programming</p>
 					</section>
 					<section>
 						<iframe width="560" height="315" src="https://www.youtube.com/embed/8aGhZQkoFbQ" frameborder="0" allowfullscreen></iframe>
+					</section>
+				</section>
+				<section>
+					<section>
+						<p>Different Ways:</p>
+						<ul>
+							<li>old - callback</li>
+							<li>refactored - clean-callback</li>
+							<li>better - promises and other libraries</li>
+							<li>best - generators in ES6</li>
+						</ul>
 					</section>
 				</section>
 				<section>
@@ -134,9 +174,9 @@ hi from file
 						<p>Callback is a function that is passed to another function (let’s call this other function “otherFunction”) as a parameter, and the callback function is called (or executed) inside the otherFunction. </p>
 						<small>Callback functions are extremely important in Javascript. They’re pretty much everywhere.</small>
 					<pre><code>
-$(".callback").click(function() {
-	alert("callback Clicked");
-});
+	$(".callback").click(function() {
+		alert("callback Clicked");
+	});
 					</code></pre>
 					<script>
 					jQuery(".callback").click(function() {
@@ -144,6 +184,68 @@ $(".callback").click(function() {
 					});
 					</script>
 					<a target="_blank" href="http://javascriptissexy.com/understand-javascript-callback-functions-and-use-them/">learn more</a>
+				</section>
+				<section>
+					<section>
+						<h4>Promises in JS</h4>
+						<p>As a human being, you're multithreaded. But JS isn't.</p>
+						<!-- <p>We need promises, as we need to make decisions based on possible results of our call.</p> -->
+						<p><img src="img/weather-forecast.png" alt="weather"></p>
+					</section>
+					<section>
+						<p>Possible Outcomes:</p>
+						<ul>
+							<li>Fulfilled - Success (prepareFishingTrip)</li>
+							<li>Fulfilled - Error (stayHome)</li>
+							<li>Not Fulfilled (stayHome)</li>
+						</ul>
+					</section>
+				</section>
+				<section>
+					<section>
+						<p>Generators in JS</p>
+						<p>A generator is a special type of function that works as a factory for iterators.</p>
+						<p>A function becomes a generator if it contains one or more yield expressions and if it uses the function* syntax.</p>
+					</section>
+					<section>
+						<p>Syntax</p>
+						<pre>
+							<code>
+	function *foo() {
+	  yield 1;
+	  yield 2;
+	  yield 3;
+	  yield 4;
+	  yield 5;
+	}
+							</code>
+						</pre>
+					</section>
+				</section>
+				<section>
+					<section>
+						<p>Popular Libraries for Async:</p>
+						<ul>
+							<li>q</li>
+							<li>async</li>
+							<li>bluebird</li>
+						</ul>
+					</section>
+					<section>
+						<p>Why to use them ?</p>
+						<ul>
+							<li>reject and resolve</li>
+							<li>additional functions to deliberate</li>
+							<li>follows ES6</li>
+						</ul>
+					</section>
+					<section>
+						<p>One of the Example of async</p>
+						<p><img src="img/cargo.jpg" alt=""></p>
+					</section>
+				</section>
+				<section>
+					<p>Thank You</p>
 				</section>
 			</div>
 
